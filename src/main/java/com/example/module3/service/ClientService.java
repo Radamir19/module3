@@ -11,43 +11,42 @@ import java.util.List;
 
 @Service
 public class ClientService {
-    private final ClientRepository repository;
+    private final ClientRepository clientRepository;
 
-    public ClientService(ClientRepository repository) {
-        this.repository = repository;
+    private final ClientMapper clientMapper;
+
+    public ClientService(ClientRepository clientRepository, ClientMapper clientMapper) {
+        this.clientRepository = clientRepository;
+        this.clientMapper = clientMapper;
     }
 
-    public List<ClientDto> getAll() {
-        return repository.findAll().stream().map(ClientMapper::toDto).toList();
-    }
     public ClientDto getById(Long id) {
-        Client client = repository.findById(id).orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден"));
-        return ClientMapper.toDto(client);
+        Client client = clientRepository.findById(id).orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден"));
+        return clientMapper.toDto(client);
     }
 
 
-    public ClientDto create(String fullName) {
+    public ClientDto create(String name, String surname, String patronymic) {
         Client client = new Client();
-        client.setFullName(fullName);
-        client.addCode();
-        repository.save(client);
-        try {
-            return ClientMapper.toDto(client);
-        } catch (Exception e) {
-            repository.delete(client);
-            throw e;
-        }
+        client.setName(name);
+        client.setName(surname);
+        client.setPatronymic(patronymic);
+        client.changeCode();
+        clientRepository.save(client);
+        return clientMapper.toDto(client);
     }
 
-    public ClientDto updateById(Long id, String fullName) {
-        Client client = repository.findById(id).orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден."));
-        client.setFullName(fullName);
-        repository.save(client);
-        return ClientMapper.toDto(client);
+    public ClientDto updateById(Long id, String name, String surname, String patronymic) {
+        Client client = clientRepository.findById(id).orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден."));
+        client.setName(name);
+        client.setName(surname);
+        client.setPatronymic(patronymic);
+        clientRepository.save(client);
+        return clientMapper.toDto(client);
     }
 
     public void deleteById(Long id) {
-        Client client = repository.findById(id).orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден."));
-        repository.delete(client);
+        Client client = clientRepository.findById(id).orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден."));
+        clientRepository.delete(client);
     }
 }

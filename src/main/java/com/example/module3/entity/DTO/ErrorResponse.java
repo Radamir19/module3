@@ -1,4 +1,4 @@
-package com.example.module3.exception;
+package com.example.module3.entity.DTO;
 
 public class ErrorResponse {
     private String message;

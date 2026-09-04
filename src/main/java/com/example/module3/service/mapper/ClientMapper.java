@@ -2,24 +2,26 @@ package com.example.module3.service.mapper;
 
 import com.example.module3.entity.Client;
 import com.example.module3.entity.DTO.ClientDto;
-import com.example.module3.entity.DTO.QrDto;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
-
+@Component
 public class ClientMapper {
 
-    public static ClientDto toDto(Client client) {
-        List<QrDto> codes = client.getCodes().stream().map(QrMapper::toDto).toList();
+    public ClientDto toDto(Client client) {
         return new ClientDto(
                 client.getId(),
-                client.getFullName(),
-                codes
+                client.getName(),
+                client.getSurname(),
+                client.getPatronymic()
         );
     }
 
-    public static Client toEntity(ClientDto dto) {
+    public Client toEntity(ClientDto dto) {
         Client client = new Client();
-        client.setFullName(dto.full_name());
+        client.setName(dto.name());
+        client.setSurname(dto.surname());
+        client.setPatronymic(dto.patronymic());
         return client;
     }
 }

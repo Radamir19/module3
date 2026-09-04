@@ -1,26 +1,21 @@
 package com.example.module3.controller;
 
 import com.example.module3.contoller.QrController;
-import com.example.module3.entity.Client;
 import com.example.module3.entity.DTO.QrDto;
 import com.example.module3.exception.NotFoundException;
 import com.example.module3.service.QrService;
 import com.example.module3.service.mapper.QrMapper;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.AssertionsForClassTypes.contentOf;
-import static org.assertj.core.api.AssertionsForClassTypes.not;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,11 +23,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class QrControllerTest {
     @MockitoBean
     private QrService service;
+    @MockitoBean
+    private QrMapper qrMapper;
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper mapper;
-
     private QrDto example() {
         return new QrDto(1L, UUID.randomUUID());
     }
@@ -81,7 +75,6 @@ public class QrControllerTest {
     void loginTest() throws Exception {
         QrDto qr = example();
         when(service.login(qr.code())).thenReturn("Иванов Иван Иванович");
-        Client client = QrMapper.toEntity(qr).getClient();
         mockMvc.perform(post("/api/qr/login/" + qr.code()))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Иванов Иван Иванович"));

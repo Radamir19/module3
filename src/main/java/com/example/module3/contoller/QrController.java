@@ -2,41 +2,43 @@ package com.example.module3.contoller;
 
 import com.example.module3.entity.DTO.QrDto;
 import com.example.module3.service.QrService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/qr")
+@RequestMapping("api/v1/qr")
 public class QrController {
-    private final QrService service;
+    private final QrService qrService;
 
-    public QrController(QrService service) {
-        this.service = service;
+    public QrController(QrService qrService) {
+        this.qrService = qrService;
     }
 
     @PostMapping("create_client/{client_id}")
-    public QrDto create(@PathVariable(name = "client_id") Long id) {
-        return service.createQr(id);
+    public ResponseEntity<QrDto> create(@PathVariable(name = "client_id") Long id) {
+        return ResponseEntity.ok(qrService.createQr(id));
     }
 
     @GetMapping("get_qr/{qr_id}")
-    public QrDto getById(@PathVariable(name = "qr_id") Long id) {
-        return service.getById(id);
+    public ResponseEntity<QrDto> getById(@PathVariable(name = "qr_id") Long id) {
+        return ResponseEntity.ok(qrService.getById(id));
     }
 
     @PutMapping("update_qr/{qr_id}")
-    public QrDto update(@PathVariable(name = "qr_id") Long id) {
-       return service.updateQr(id);
+    public ResponseEntity<QrDto> update(@PathVariable(name = "qr_id") Long id) {
+       return ResponseEntity.ok(qrService.updateQr(id));
     }
 
     @DeleteMapping("delete_qr/{qr_id}")
-    public void delete(@PathVariable(name = "qr_id") Long id) {
-        service.deleteQr(id);
+    public ResponseEntity<Void> delete(@PathVariable(name = "qr_id") Long id) {
+        qrService.deleteQr(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("login/{qr}")
-    public String login(@PathVariable UUID qr) {
-        return service.login(qr);
+    public ResponseEntity<String> login(@PathVariable UUID qr) {
+        return ResponseEntity.ok(qrService.login(qr));
     }
 }

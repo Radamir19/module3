@@ -7,20 +7,20 @@ import org.hibernate.generator.EventType;
 import java.util.UUID;
 
 @Entity
+@Table(name = "qr")
 public class Qr {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @MapsId
+    @JoinColumn(name = "id")
     private Client client;
 
-    @Column(name = "qr_code", unique = true, nullable = false, insertable = false)
+    @Column(name = "qr_code", unique = true, nullable = false, insertable = false, updatable = false)
     @Generated(event = EventType.INSERT)
     private UUID code;
-
 
     public Long getId() {
         return id;
@@ -33,9 +33,5 @@ public class Qr {
     }
     public void setClient(Client client) {
         this.client = client;
-    }
-
-    public void setCode(UUID qr) {
-        this.code = qr;
     }
 }

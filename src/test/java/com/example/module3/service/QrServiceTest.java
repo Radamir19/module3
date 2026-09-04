@@ -6,6 +6,7 @@ import com.example.module3.entity.Qr;
 import com.example.module3.exception.NotFoundException;
 import com.example.module3.repository.ClientRepository;
 import com.example.module3.repository.QrRepository;
+import com.example.module3.service.mapper.QrMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,36 +26,34 @@ public class QrServiceTest {
     private ClientRepository clientRepository;
     @Mock
     private QrRepository qrRepository;
+    @Mock
+    private QrMapper qrMapper;
     @InjectMocks
-    private QrService service;
+    private QrService qrService;
 
     @Test
     public void createTest() {
         Client client = new Client();
         when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
-        service.createQr(1L);
+        qrService.createQr(1L);
         verify(clientRepository).save(client);
     }
 
     @Test
     public void readTest() {
         Qr qr = new Qr();
-        Client client = new Client();
-        client.setFullName("Иванов Иван Иванович");
+        QrDto expected = new QrDto(1L, UUID.randomUUID());
         when(qrRepository.findById(1L)).thenReturn(Optional.of(qr));
-        UUID code = UUID.randomUUID();
-        qr.setCode(code);
-        qr.setClient(client);
-        QrDto dto = service.getById(1L);
-        Assertions.assertEquals(code, dto.code());
+        when(qrMapper.toDto(qr)).thenReturn(expected);
+        QrDto dto = qrService.getById(1L);
+        Assertions.assertEquals(expected, dto);
     }
 
     @Test
     public void updateTest() {
         Client client = new Client();
-        client.setFullName("Иванов Иван Иванович");
         when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
-        service.updateQr(1L);
+        qrService.updateQr(1L);
         verify(clientRepository).save(client);
     }
 
@@ -62,29 +61,29 @@ public class QrServiceTest {
     public void deleteTest() {
         Qr qr = new Qr();
         when(qrRepository.findById(1L)).thenReturn(Optional.of(qr));
-        service.deleteQr(1L);
-        Assertions.assertEquals(null, qr.getCode());
-        verify(qrRepository).save(qr);
+        qrService.deleteQr(1L);
+        verify(qrRepository).delete(qr);
     }
 
     @Test
-    public void login() {
-        Qr qr = new Qr();
+    public void loginTest() {
         UUID code = UUID.randomUUID();
         Client client = new Client();
-        when(qrRepository.findByCode(code)).thenReturn(Optional.of(qr));
-        qr.setCode(code);
+        client.setSurname("Иванов");
+        client.setName("Иван");
+        client.setPatronymic("Иванович");
+        Qr qr = new Qr();
         qr.setClient(client);
-        String input = "Иванов Иван Иванович";
-        client.setFullName(input);
-        String result = service.login(code);
-        Assertions.assertEquals(input, result);
+        when(qrRepository.findByCode(code)).thenReturn(Optional.of(qr));
+        String result = qrService.login(code);
+        Assertions.assertEquals("Иванов Иван Иванович", result);
+        verify(clientRepository).save(client);
     }
 
     @Test
     public void loginFail() {
         UUID code = UUID.randomUUID();
         when(qrRepository.findByCode(code)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NotFoundException.class, () -> service.login(code));
+        Assertions.assertThrows(NotFoundException.class, () -> qrService.login(code));
     }
 }

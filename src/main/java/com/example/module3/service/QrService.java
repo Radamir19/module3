@@ -18,40 +18,43 @@ public class QrService {
 
     private final ClientRepository clientRepository;
 
-    public QrService(QrRepository qrRepository, ClientRepository clientRepository) {
+    private final QrMapper qrMapper;
+
+    public QrService(QrRepository qrRepository, ClientRepository clientRepository, QrMapper qrMapper) {
         this.qrRepository = qrRepository;
         this.clientRepository = clientRepository;
+        this.qrMapper = qrMapper;
     }
 
     public QrDto getById(Long id) {
         Qr qr = qrRepository.findById(id).orElseThrow(() -> new NotFoundException("Qr с id = " + id + " не найден."));
-        return QrMapper.toDto(qr);
+        return qrMapper.toDto(qr);
     }
     public QrDto createQr(Long id) {
         Client client = clientRepository.findById(id).orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден."));
-        Qr qr = client.addCode();
+        Qr qr = client.changeCode();
         clientRepository.save(client);
-        return QrMapper.toDto(qr);
+        return qrMapper.toDto(qr);
     }
 
-    public QrDto updateQr(Long id) {
-        Client client = clientRepository.findById(id).orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден."));
-        Qr qr = client.addCode();
+    public QrDto updateQr(Long qrId) {
+        Qr existing = qrRepository.findById(qrId)
+                .orElseThrow(() -> new NotFoundException("Qr с id = " + qrId + " не найден."));
+        Client client = existing.getClient();
+        Qr qr = client.changeCode();
         clientRepository.save(client);
-        return QrMapper.toDto(qr);
+        return qrMapper.toDto(qr);
     }
 
     public void deleteQr(Long id) {
         Qr qr = qrRepository.findById(id).orElseThrow(() -> new NotFoundException("Qr с id = " + id + " не найден."));
-        qr.setCode(null);
-        qrRepository.save(qr);
+        qrRepository.delete(qr);
     }
 
     public String login(UUID qr) {
         Qr findQr = qrRepository.findByCode(qr).orElseThrow(() -> new NotFoundException("Такой qr код не существует."));
         Client client = findQr.getClient();
-        findQr.setCode(null);
-        client.addCode();
+        client.changeCode();
         clientRepository.save(client);
         return client.getFullName();
     }

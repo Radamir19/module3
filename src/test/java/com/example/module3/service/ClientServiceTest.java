@@ -3,6 +3,7 @@ package com.example.module3.service;
 import com.example.module3.entity.Client;
 import com.example.module3.entity.DTO.ClientDto;
 import com.example.module3.repository.ClientRepository;
+import com.example.module3.service.mapper.ClientMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,37 +21,42 @@ import static org.mockito.Mockito.when;
 public class ClientServiceTest {
     @Mock
     private ClientRepository repository;
-
+    @Mock
+    private ClientMapper clientMapper;
     @InjectMocks
     private ClientService service;
 
     @Test
     public void createTest() {
-        ClientDto dto = service.create("Иванов Иван Иванович");
-
-        Assertions.assertEquals("Иванов Иван Иванович", dto.full_name());
-        Assertions.assertEquals(1, dto.codes().size());
-
+        ClientDto expected = new ClientDto(1L, "Иван", "Иванов", "Иванович");
+        when(clientMapper.toDto(any(Client.class))).thenReturn(expected);
+        ClientDto dto = service.create("Иван", "Иванов", "Иванович");
+        Assertions.assertEquals(expected, dto);
         verify(repository).save(any(Client.class));
     }
 
     @Test
     public void readTest() {
         Client client = new Client();
-        client.setFullName("Иванов Иван Иванович");
-
+        ClientDto expected = new ClientDto(1L, "Иван", "Иванов", "Иванович");
         when(repository.findById(1L)).thenReturn(Optional.of(client));
+        when(clientMapper.toDto(client)).thenReturn(expected);
         ClientDto dto = service.getById(1L);
-        Assertions.assertEquals("Иванов Иван Иванович", dto.full_name());
+        Assertions.assertEquals(expected, dto);
     }
 
     @Test
     public void updateTest() {
         Client client = new Client();
-        String newName = "Петров Петр Петрович";
+        ClientDto expected = new ClientDto(1L, "Пётр", "Петров", "Петрович");
         when(repository.findById(1L)).thenReturn(Optional.of(client));
-        ClientDto dto = service.updateById(1L, newName);
-        Assertions.assertEquals("Петров Петр Петрович", dto.full_name());
+        when(clientMapper.toDto(client)).thenReturn(expected);
+
+        ClientDto dto = service.updateById(1L, "Пётр", "Петров", "Петрович");
+
+        Assertions.assertEquals(expected, dto);
+        Assertions.assertEquals("Петров", expected.surname());
+        verify(repository).save(client);
     }
 
     @Test
