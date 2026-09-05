@@ -11,5 +11,4 @@ import java.util.UUID;
 
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
-    Optional<Client> findByFullName(String fullName);
 }

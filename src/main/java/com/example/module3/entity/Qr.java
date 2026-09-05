@@ -18,7 +18,7 @@ public class Qr {
     @JoinColumn(name = "id")
     private Client client;
 
-    @Column(name = "qr_code", unique = true, nullable = false, updatable = false)
+    @Column(name = "qr_code", unique = true, nullable = false)
     private UUID code = UUID.randomUUID();
 
     public Long getId() {
@@ -32,5 +32,8 @@ public class Qr {
     }
     public void setClient(Client client) {
         this.client = client;
+    }
+    public void regenerate() {
+        this.code = UUID.randomUUID();
     }
 }

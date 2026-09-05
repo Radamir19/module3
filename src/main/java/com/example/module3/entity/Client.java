@@ -65,10 +65,12 @@ public class Client {
     }
 
     public Qr changeCode() {
-        this.code = null;
-        Qr qr = new Qr();
-        qr.setClient(this);
-        this.code = qr;
+        if (code == null) {
+            code = new Qr();
+            code.setClient(this);
+        } else {
+            code.regenerate();
+        }
         return code;
     }
 

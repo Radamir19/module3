@@ -46,7 +46,7 @@ public class QrControllerTest {
         QrDto qr = example();
         when(service.createQr(1L)).thenReturn(qr);
 
-        mockMvc.perform(post("/api/qr/create_client/1"))
+        mockMvc.perform(post("/api/v1/qr/create_qr_for_client/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(qr.code().toString()));
 

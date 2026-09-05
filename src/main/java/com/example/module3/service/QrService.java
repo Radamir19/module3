@@ -62,8 +62,8 @@ public class QrService {
         Qr findQr = qrRepository.findByCode(qr)
                 .orElseThrow(() -> new NotFoundException("Такой qr код не существует."));
         Client client = findQr.getClient();
-        client.changeCode();
-        clientRepository.save(client);
+        findQr.regenerate();
+        qrRepository.saveAndFlush(findQr);
         return client.getFullName();
     }
 }
