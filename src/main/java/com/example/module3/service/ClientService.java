@@ -20,6 +20,13 @@ public class ClientService {
         this.clientMapper = clientMapper;
     }
 
+    public List<ClientDto> getAll() {
+        List<ClientDto> allClients = clientRepository.findAll().stream()
+                .map(clientMapper::toDto)
+                .toList();
+        return allClients;
+    }
+
     public ClientDto getById(Long id) {
         Client client = clientRepository.findById(id).orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден"));
         return clientMapper.toDto(client);

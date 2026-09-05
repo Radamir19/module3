@@ -17,7 +17,7 @@ public class Client {
     private String name;
     @Column(name = "surname", nullable = false)
     private String surname;
-    @Column(name = "patronymic", nullable = false)
+    @Column(name = "patronymic")
     private String patronymic;
 
     @OneToOne(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -65,6 +65,7 @@ public class Client {
     }
 
     public Qr changeCode() {
+        this.code = null;
         Qr qr = new Qr();
         qr.setClient(this);
         this.code = qr;

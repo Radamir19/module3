@@ -27,18 +27,24 @@ public class QrService {
     }
 
     public QrDto getById(Long id) {
-        Qr qr = qrRepository.findById(id).orElseThrow(() -> new NotFoundException("Qr с id = " + id + " не найден."));
+        Qr qr = qrRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Qr с id = " + id + " не найден."));
         return qrMapper.toDto(qr);
     }
     public QrDto createQr(Long id) {
-        Client client = clientRepository.findById(id).orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден."));
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден."));
+        if(client.getCode() != null) {
+            qrRepository.delete(client.getCode());
+            qrRepository.flush();
+        }
         Qr qr = client.changeCode();
         clientRepository.save(client);
         return qrMapper.toDto(qr);
     }
 
     public QrDto updateQr(Long qrId) {
-        Qr existing = qrRepository.findById(qrId)
+        Qr existing = qrRepository.findWithClientById(qrId)
                 .orElseThrow(() -> new NotFoundException("Qr с id = " + qrId + " не найден."));
         Client client = existing.getClient();
         Qr qr = client.changeCode();
@@ -47,12 +53,14 @@ public class QrService {
     }
 
     public void deleteQr(Long id) {
-        Qr qr = qrRepository.findById(id).orElseThrow(() -> new NotFoundException("Qr с id = " + id + " не найден."));
+        Qr qr = qrRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Qr с id = " + id + " не найден."));
         qrRepository.delete(qr);
     }
 
     public String login(UUID qr) {
-        Qr findQr = qrRepository.findByCode(qr).orElseThrow(() -> new NotFoundException("Такой qr код не существует."));
+        Qr findQr = qrRepository.findByCode(qr)
+                .orElseThrow(() -> new NotFoundException("Такой qr код не существует."));
         Client client = findQr.getClient();
         client.changeCode();
         clientRepository.save(client);

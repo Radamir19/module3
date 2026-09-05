@@ -5,6 +5,8 @@ import com.example.module3.service.ClientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/client")
 public class ClientController {
@@ -14,6 +16,12 @@ public class ClientController {
     public ClientController(ClientService clientService) {
         this.clientService = clientService;
     }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<List<ClientDto>> findAllClients() {
+        return ResponseEntity.ok(clientService.getAll());
+    }
+
     @GetMapping("/get/{id}")
     public ResponseEntity<ClientDto> findClient(@PathVariable Long id) {
         return ResponseEntity.ok(clientService.getById(id));
