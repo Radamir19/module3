@@ -36,7 +36,7 @@ public class ClientService {
     public ClientDto create(String name, String surname, String patronymic) {
         Client client = new Client();
         client.setName(name);
-        client.setName(surname);
+        client.setSurname(surname);
         client.setPatronymic(patronymic);
         client.changeCode();
         clientRepository.save(client);
