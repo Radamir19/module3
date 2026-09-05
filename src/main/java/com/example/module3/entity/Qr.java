@@ -18,9 +18,8 @@ public class Qr {
     @JoinColumn(name = "id")
     private Client client;
 
-    @Column(name = "qr_code", unique = true, nullable = false, insertable = false, updatable = false)
-    @Generated(event = EventType.INSERT)
-    private UUID code;
+    @Column(name = "qr_code", unique = true, nullable = false, updatable = false)
+    private UUID code = UUID.randomUUID();
 
     public Long getId() {
         return id;
