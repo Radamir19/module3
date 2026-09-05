@@ -1,7 +1,7 @@
 package com.example.module3.service;
 
 import com.example.module3.entity.Client;
-import com.example.module3.entity.DTO.ClientDto;
+import com.example.module3.entity.dto.ClientDto;
 import com.example.module3.repository.ClientRepository;
 import com.example.module3.service.mapper.ClientMapper;
 import org.junit.jupiter.api.Assertions;
@@ -52,7 +52,7 @@ public class ClientServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.of(client));
         when(clientMapper.toDto(client)).thenReturn(expected);
 
-        ClientDto dto = service.updateById(1L, "Пётр", "Петров", "Петрович");
+        ClientDto dto = service.updateById(1L, expected);
 
         Assertions.assertEquals(expected, dto);
         Assertions.assertEquals("Петров", expected.surname());

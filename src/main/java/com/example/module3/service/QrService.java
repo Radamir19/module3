@@ -1,7 +1,7 @@
 package com.example.module3.service;
 
 import com.example.module3.entity.Client;
-import com.example.module3.entity.DTO.QrDto;
+import com.example.module3.entity.dto.QrDto;
 import com.example.module3.entity.Qr;
 import com.example.module3.exception.NotFoundException;
 import com.example.module3.repository.ClientRepository;
@@ -32,26 +32,26 @@ public class QrService {
         return qrMapper.toDto(qr);
     }
     public QrDto createQr(Long id) {
-        Client client = clientRepository.findById(id)
+        Client client = clientRepository.findWithCodeById(id)
                 .orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден."));
-        if(client.getCode() != null) {
-            qrRepository.delete(client.getCode());
-            qrRepository.flush();
+        Qr qr = client.getCode();
+        if (qr == null) {
+            qr = new Qr();
+            qr.setClient(client);
+        } else {
+            qr.regenerate();
         }
-        Qr qr = client.changeCode();
-        clientRepository.save(client);
+        qrRepository.saveAndFlush(qr);
         return qrMapper.toDto(qr);
     }
 
     public QrDto updateQr(Long qrId) {
-        Qr existing = qrRepository.findWithClientById(qrId)
+        Qr qr = qrRepository.findById(qrId)
                 .orElseThrow(() -> new NotFoundException("Qr с id = " + qrId + " не найден."));
-        Client client = existing.getClient();
-        Qr qr = client.changeCode();
-        clientRepository.save(client);
+        qr.regenerate();
+        qrRepository.saveAndFlush(qr);
         return qrMapper.toDto(qr);
     }
-
     public void deleteQr(Long id) {
         Qr qr = qrRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Qr с id = " + id + " не найден."));

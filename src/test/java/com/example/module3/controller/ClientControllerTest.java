@@ -1,7 +1,7 @@
 package com.example.module3.controller;
 
 import com.example.module3.contoller.ClientController;
-import com.example.module3.entity.DTO.ClientDto;
+import com.example.module3.entity.dto.ClientDto;
 import com.example.module3.exception.NotFoundException;
 import com.example.module3.service.ClientService;
 import org.junit.jupiter.api.Test;
@@ -65,7 +65,7 @@ public class ClientControllerTest {
     @Test
     void updateClientTest() throws Exception {
         ClientDto client = new ClientDto(1L, "Иван", "Иванов", "Иванович");
-        when(service.updateById(1L,"Иван", "Иванов", "Иванович")).thenReturn(client);
+        when(service.updateById(1L, new ClientDto(1L, "Иван", "Иванов", "Иванович"))).thenReturn(client);
 
         mockMvc.perform(put("/api/v1/client/update/1")
                         .contentType(MediaType.APPLICATION_JSON)

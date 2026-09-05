@@ -1,7 +1,8 @@
 package com.example.module3.service;
 
 import com.example.module3.entity.Client;
-import com.example.module3.entity.DTO.ClientDto;
+import com.example.module3.entity.Qr;
+import com.example.module3.entity.dto.ClientDto;
 import com.example.module3.exception.NotFoundException;
 import com.example.module3.repository.ClientRepository;
 import com.example.module3.service.mapper.ClientMapper;
@@ -38,16 +39,18 @@ public class ClientService {
         client.setName(name);
         client.setSurname(surname);
         client.setPatronymic(patronymic);
-        client.changeCode();
+        Qr qr = new Qr();
+        qr.setClient(client);
+        client.setCode(qr);
         clientRepository.save(client);
         return clientMapper.toDto(client);
     }
 
-    public ClientDto updateById(Long id, String name, String surname, String patronymic) {
+    public ClientDto updateById(Long id, ClientDto clientDto) {
         Client client = clientRepository.findById(id).orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден."));
-        client.setName(name);
-        client.setName(surname);
-        client.setPatronymic(patronymic);
+        client.setName(clientDto.name());
+        client.setName(clientDto.surname());
+        client.setPatronymic(clientDto.patronymic());
         clientRepository.save(client);
         return clientMapper.toDto(client);
     }

@@ -1,4 +1,4 @@
-package com.example.module3.entity.DTO;
+package com.example.module3.entity.dto;
 
 
 import java.util.UUID;

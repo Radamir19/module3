@@ -1,8 +1,7 @@
 package com.example.module3.service.mapper;
 
 import com.example.module3.entity.Client;
-import com.example.module3.entity.DTO.ClientDto;
-import org.springframework.context.annotation.Bean;
+import com.example.module3.entity.dto.ClientDto;
 import org.springframework.stereotype.Component;
 
 @Component

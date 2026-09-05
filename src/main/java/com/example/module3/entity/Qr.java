@@ -1,8 +1,6 @@
 package com.example.module3.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Generated;
-import org.hibernate.generator.EventType;
 
 import java.util.UUID;
 
@@ -18,7 +16,7 @@ public class Qr {
     @JoinColumn(name = "id")
     private Client client;
 
-    @Column(name = "qr_code", unique = true, nullable = false)
+    @Column(name = "qr_code", unique = true)
     private UUID code = UUID.randomUUID();
 
     public Long getId() {

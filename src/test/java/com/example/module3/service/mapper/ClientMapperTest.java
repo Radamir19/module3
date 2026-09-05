@@ -1,7 +1,7 @@
 package com.example.module3.service.mapper;
 
 import com.example.module3.entity.Client;
-import com.example.module3.entity.DTO.ClientDto;
+import com.example.module3.entity.dto.ClientDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

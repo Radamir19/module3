@@ -1,6 +1,6 @@
 package com.example.module3.contoller;
 
-import com.example.module3.entity.DTO.ErrorResponse;
+import com.example.module3.entity.dto.ErrorResponse;
 import com.example.module3.exception.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

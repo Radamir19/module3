@@ -1,7 +1,7 @@
 package com.example.module3.service;
 
 import com.example.module3.entity.Client;
-import com.example.module3.entity.DTO.QrDto;
+import com.example.module3.entity.dto.QrDto;
 import com.example.module3.entity.Qr;
 import com.example.module3.exception.NotFoundException;
 import com.example.module3.repository.ClientRepository;
@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,9 +35,9 @@ public class QrServiceTest {
     @Test
     public void createTest() {
         Client client = new Client();
-        when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
+        when(clientRepository.findWithCodeById(1L)).thenReturn(Optional.of(client));
         qrService.createQr(1L);
-        verify(clientRepository).save(client);
+        verify(qrRepository).saveAndFlush(any(Qr.class));
     }
 
     @Test
@@ -51,10 +52,10 @@ public class QrServiceTest {
 
     @Test
     public void updateTest() {
-        Client client = new Client();
-        when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
+        Qr qr = new Qr();
+        when(qrRepository.findById(1L)).thenReturn(Optional.of(qr));
         qrService.updateQr(1L);
-        verify(clientRepository).save(client);
+        verify(qrRepository).saveAndFlush(qr);
     }
 
     @Test
@@ -76,8 +77,8 @@ public class QrServiceTest {
         qr.setClient(client);
         when(qrRepository.findByCode(code)).thenReturn(Optional.of(qr));
         String result = qrService.login(code);
-        Assertions.assertEquals("Иванов Иван Иванович", result);
-        verify(clientRepository).save(client);
+        Assertions.assertEquals("Иван Иванов Иванович", result);
+        verify(qrRepository).saveAndFlush(qr);
     }
 
     @Test

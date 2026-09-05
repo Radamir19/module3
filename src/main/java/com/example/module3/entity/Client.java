@@ -20,7 +20,7 @@ public class Client {
     @Column(name = "patronymic")
     private String patronymic;
 
-    @OneToOne(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Qr code;
 
     public Client() {
@@ -64,14 +64,8 @@ public class Client {
         return name + " " + surname + " " + patronymic;
     }
 
-    public Qr changeCode() {
-        if (code == null) {
-            code = new Qr();
-            code.setClient(this);
-        } else {
-            code.regenerate();
-        }
-        return code;
+    public void setCode(Qr code) {
+        this.code = code;
     }
 
 }
