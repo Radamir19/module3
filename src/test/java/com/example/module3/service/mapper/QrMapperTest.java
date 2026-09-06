@@ -11,8 +11,7 @@ public class QrMapperTest {
 
     @Test
     void testToDto() {
-        Qr qr = new Qr();
-        qr.setClient(new Client());
+        Qr qr = new Qr(new Client());
         QrDto qrDto = qrMapper.toDto(qr);
         Assertions.assertEquals(qr.getId(), qrDto.id());
         Assertions.assertEquals(qr.getCode(), qrDto.code());

@@ -2,6 +2,7 @@ package com.example.module3.contoller;
 
 import com.example.module3.entity.dto.QrDto;
 import com.example.module3.service.QrService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,11 @@ public class QrController {
 
     public QrController(QrService qrService) {
         this.qrService = qrService;
+    }
+
+    @PostMapping("/{clientId}")
+    public ResponseEntity<QrDto> create(@PathVariable Long clientId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(qrService.createQr(clientId));
     }
 
     @GetMapping("/{id}")

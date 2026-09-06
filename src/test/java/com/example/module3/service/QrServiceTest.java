@@ -42,7 +42,7 @@ public class QrServiceTest {
 
     @Test
     public void readTest() {
-        Qr qr = new Qr();
+        Qr qr = new Qr(new Client());
         QrDto expected = new QrDto(1L, UUID.randomUUID());
         when(qrRepository.findById(1L)).thenReturn(Optional.of(qr));
         when(qrMapper.toDto(qr)).thenReturn(expected);
@@ -52,7 +52,7 @@ public class QrServiceTest {
 
     @Test
     public void updateTest() {
-        Qr qr = new Qr();
+        Qr qr = new Qr(new Client());
         when(qrRepository.findById(1L)).thenReturn(Optional.of(qr));
         qrService.updateQr(1L);
         verify(qrRepository).saveAndFlush(qr);
@@ -60,7 +60,7 @@ public class QrServiceTest {
 
     @Test
     public void deleteTest() {
-        Qr qr = new Qr();
+        Qr qr = new Qr(new Client());
         when(qrRepository.findById(1L)).thenReturn(Optional.of(qr));
         qrService.deleteQr(1L);
         verify(qrRepository).delete(qr);
@@ -73,8 +73,7 @@ public class QrServiceTest {
         client.setSurname("Иванов");
         client.setName("Иван");
         client.setPatronymic("Иванович");
-        Qr qr = new Qr();
-        qr.setClient(client);
+        Qr qr = new Qr(client);
         when(qrRepository.findByCode(code)).thenReturn(Optional.of(qr));
         String result = qrService.login(code);
         Assertions.assertEquals("Иван Иванов Иванович", result);

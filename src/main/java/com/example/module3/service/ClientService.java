@@ -34,13 +34,12 @@ public class ClientService {
     }
 
 
-    public ClientDto create(String name, String surname, String patronymic) {
+    public ClientDto create(ClientDto clientDto) {
         Client client = new Client();
-        client.setName(name);
-        client.setSurname(surname);
-        client.setPatronymic(patronymic);
-        Qr qr = new Qr();
-        qr.setClient(client);
+        client.setName(clientDto.name());
+        client.setSurname(clientDto.surname());
+        client.setPatronymic(clientDto.patronymic());
+        Qr qr = new Qr(client);
         client.setCode(qr);
         clientRepository.save(client);
         return clientMapper.toDto(client);

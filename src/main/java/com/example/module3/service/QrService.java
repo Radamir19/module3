@@ -36,8 +36,7 @@ public class QrService {
                 .orElseThrow(() -> new NotFoundException("Клиент с id = " + id + " не найден."));
         Qr qr = client.getCode();
         if (qr == null) {
-            qr = new Qr();
-            qr.setClient(client);
+            qr = new Qr(client);
         } else {
             qr.regenerate();
         }

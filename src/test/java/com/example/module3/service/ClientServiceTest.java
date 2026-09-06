@@ -30,7 +30,7 @@ public class ClientServiceTest {
     public void createTest() {
         ClientDto expected = new ClientDto(1L, "Иван", "Иванов", "Иванович");
         when(clientMapper.toDto(any(Client.class))).thenReturn(expected);
-        ClientDto dto = service.create("Иван", "Иванов", "Иванович");
+        ClientDto dto = service.create(expected);
         Assertions.assertEquals(expected, dto);
         verify(repository).save(any(Client.class));
     }

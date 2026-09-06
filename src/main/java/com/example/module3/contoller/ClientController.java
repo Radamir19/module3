@@ -4,6 +4,7 @@ import com.example.module3.entity.dto.ClientDto;
 import com.example.module3.entity.dto.QrDto;
 import com.example.module3.service.ClientService;
 import com.example.module3.service.QrService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,41 +16,33 @@ public class ClientController {
 
     private final ClientService clientService;
 
-    private final QrService qrService;
-
-    public ClientController(ClientService clientService, QrService qrService) {
+    public ClientController(ClientService clientService) {
         this.clientService = clientService;
-        this.qrService = qrService;
     }
 
-    @PostMapping("/{clientId}/qr")
-    public ResponseEntity<QrDto> create(@PathVariable Long clientId) {
-        return ResponseEntity.ok().body(qrService.createQr(clientId));
-    }
-
-    @GetMapping("/getAll")
+    @GetMapping
     public ResponseEntity<List<ClientDto>> findAllClients() {
         return ResponseEntity.ok(clientService.getAll());
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ClientDto> findClient(@PathVariable Long id) {
         return ResponseEntity.ok(clientService.getById(id));
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ClientDto> updateClient(@PathVariable Long id, @RequestBody ClientDto clientDto) {
         return ResponseEntity.ok(clientService.updateById(id, clientDto));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
         clientService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/register")
+    @PostMapping
     public ResponseEntity<ClientDto> register(@RequestBody ClientDto registerClient) {
-        return ResponseEntity.ok(clientService.create(registerClient.name(), registerClient.surname(), registerClient.patronymic()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientService.create(registerClient));
     }
 }

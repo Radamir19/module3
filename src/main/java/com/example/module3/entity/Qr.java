@@ -17,7 +17,16 @@ public class Qr {
     private Client client;
 
     @Column(name = "qr_code", unique = true)
-    private UUID code = UUID.randomUUID();
+    private UUID code;
+
+    public Qr(Client client) {
+        this.client = client;
+        this.code = UUID.randomUUID();
+    }
+
+    protected Qr() {
+
+    }
 
     public Long getId() {
         return id;

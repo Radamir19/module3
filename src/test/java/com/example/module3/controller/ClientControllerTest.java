@@ -38,7 +38,7 @@ public class ClientControllerTest {
     void findAllClientsTest() throws Exception {
         when(service.getAll()).thenReturn(example());
 
-        mockMvc.perform(get("/api/v1/client/getAll"))
+        mockMvc.perform(get("/api/v1/clients"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(1))
@@ -50,14 +50,14 @@ public class ClientControllerTest {
     @Test
     void findClientTest() throws Exception {
         when(service.getById(1L)).thenReturn(example().get(0));
-        mockMvc.perform(get("/api/v1/client/get/1"))
+        mockMvc.perform(get("/api/v1/clients/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
     }
 
     @Test
     void deleteClientTest() throws Exception {
-        mockMvc.perform(delete("/api/v1/client/delete/1"))
+        mockMvc.perform(delete("/api/v1/clients/1"))
                 .andExpect(status().isNoContent());
         verify(service).deleteById(1L);
     }
@@ -67,7 +67,7 @@ public class ClientControllerTest {
         ClientDto client = new ClientDto(1L, "Иван", "Иванов", "Иванович");
         when(service.updateById(1L, new ClientDto(1L, "Иван", "Иванов", "Иванович"))).thenReturn(client);
 
-        mockMvc.perform(put("/api/v1/client/update/1")
+        mockMvc.perform(put("/api/v1/clients/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(client)))
                 .andExpect(status().isOk())
@@ -77,12 +77,12 @@ public class ClientControllerTest {
     @Test
     void registerTest() throws Exception {
         ClientDto client = new ClientDto(1L, "Иван", "Иванов", "Иванович");
-        when(service.create("Иван", "Иванов", "Иванович")).thenReturn(client);
+        when(service.create(client)).thenReturn(client);
 
-        mockMvc.perform(post("/api/v1/client/register")
+        mockMvc.perform(post("/api/v1/clients")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(client)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Иван"))
                 .andExpect(jsonPath("$.surname").value("Иванов"))
@@ -92,7 +92,7 @@ public class ClientControllerTest {
     @Test
     void findClientExceptionTest() throws Exception {
         when(service.getById(1L)).thenThrow(new NotFoundException("Клиент с таким айди не найден."));
-        mockMvc.perform(get("/api/v1/client/get/1"))
+        mockMvc.perform(get("/api/v1/clients/1"))
                 .andExpect(status().isNotFound());
     }
 }
