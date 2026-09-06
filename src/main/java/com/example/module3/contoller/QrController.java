@@ -18,7 +18,7 @@ public class QrController {
     }
 
     @PostMapping("/{clientId}")
-    public ResponseEntity<QrDto> create(@PathVariable Long clientId) {
+    public ResponseEntity<QrDto> create(@PathVariable(name = "clientId") Long clientId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(qrService.createQr(clientId));
     }
 

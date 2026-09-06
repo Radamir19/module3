@@ -14,6 +14,6 @@ public interface QrRepository extends JpaRepository<Qr, Long> {
     @Query("SELECT qr FROM Qr qr JOIN FETCH qr.client WHERE qr.code = :code")
     Optional<Qr> findByCode(UUID code);
 
-    @Query("SELECT code FROM Qr code LEFT JOIN FETCH code.client WHERE code.id = :id")
+    @Query("SELECT code FROM Qr code JOIN FETCH code.client WHERE code.id = :id")
     Optional<Qr> findWithClientById(@Param("id") Long id);
 }
